@@ -22,9 +22,19 @@ pipeline {
             }
        }
 
+        stage('Quality Gate Scanner') {
+            steps {
+               waitForQualityGate abortPipeline: true
+            }
+      }
+
+
         stage('push to nexus Artifactory') {
             steps {
-               nexusArtifactUploader artifacts: [[artifactId: 'SampleWebApp', classifier: '', file: 'SampleWebApp/target/SampleWebApp.war', type: 'war']], credentialsId: 'nexus_ID', groupId: 'SampleWebApp', nexusUrl: '18.219.116.90:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '1.0SNAPSHOT'        }
+                nexusArtifactUploader artifacts: [[artifactId: 'SampleWebApp', classifier: '', file: 'SampleWebApp/target/SampleWebApp.war', type: 'war']], credentialsId: 'nexus_ID', groupId: 'SampleWebApp', nexusUrl: '18.219.116.90:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '1.0SNAPSHOT'
+            }   
+            
+        }
         
         stage('deploy to tomcat') {
           steps {
